@@ -1,0 +1,40 @@
+# ============================================================
+# DARCLOS-TEMPO day-by-day processing config
+#
+# Run: python scripts/run_day.py --config configs/day_example.yaml
+# ============================================================
+
+# ---------- Date to process ----------
+year:  2025
+month: 9       # leading zero added automatically
+day:   17
+
+# ---------- Data location ----------
+# Templates may use {base_path}, {version}, {year}, {month}, {day}.
+base_path:        "/store/sao_atmos/TEMPO"
+version:          "V04"
+l1_dir_template:  "{base_path}/TEMPO_RAD_L1_{version}/{year}/{month}/{day}"
+l2_dir_template:  "{base_path}/TEMPO_CLDO4_L2_{version}/{year}/{month}/{day}"
+l1_band:          "band_290_490_nm"     # angles + cloud_top_height live here
+
+# ---------- DARCLOS-TEMPO algorithm parameters ----------
+# (frozen — these match Cloud_Shadows_v3_vectorized.ipynb)
+cloud_threshold:  0.30   # ECF >= this  → cloud-source / cloud-class pixel
+shadow_threshold: 0.05   # ECF  < this & PCSF → actual shadow (ACSF surrogate)
+safety_factor_c:  0.5    # Trees et al. (2022) Eq. 1
+h_scale_m:        8500.0 # hypsometric scale height [m]
+h_cap_m:          16000.0  # max physical cloud altitude [m]
+max_drop_frac:    0.10   # raise if more than 10% of source pixels have no valid height
+m_earth:          6378137.0
+n_earth:          6378137.0
+
+# ---------- Output ----------
+# Files land in: {output_root}/{year}/{month}/{day}/
+# Per granule: rgb_<basename>.tif + <basename>_clouds.shp +
+#              <basename>_potential_shadows.shp + <basename>_actual_shadows.shp
+output_root:  "/store/sao_atmos/maperezc/tempo_shadows/results"
+
+# Gamma-correct the RGB composite before writing the GeoTIFF
+# (matches test/netcdf_to_raster_with_L2.py — improves visual contrast).
+apply_gamma:  true
+gamma:        0.4

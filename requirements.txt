@@ -1,0 +1,21 @@
+# DARCLOS-TEMPO pipeline dependencies.
+#
+# Minimal set needed by scripts/shadows.py, scripts/io_utils.py,
+# scripts/run_day.py, and scripts/run_scan.py.
+
+# --- Numerics ---
+numpy>=1.24
+scipy>=1.10
+
+# --- I/O for TEMPO L1B / L2 (HDF5-backed NetCDF) ---
+h5py>=3.8
+netCDF4>=1.6
+
+# --- Geospatial output (GeoTIFF + shapefile) ---
+rasterio>=1.3
+fiona>=1.9
+shapely>=2.0
+geopandas>=0.14
+
+# --- Config ---
+PyYAML>=6.0
