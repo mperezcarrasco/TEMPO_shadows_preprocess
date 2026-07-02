@@ -221,6 +221,9 @@ __marimo__/
 # DARCLOS-TEMPO project-specific ignores
 # ============================================================
 
+# --- Internal-only working notes (kept on the shared drive, not in git) ---
+CLAUDE.md
+
 # --- Input data (not source-controlled; users supply their own archive) ---
 data/
 

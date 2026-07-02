@@ -1,21 +1,24 @@
-# DARCLOS-TEMPO pipeline dependencies.
+# DARCLOS-TEMPO pipeline dependencies (exact pins for reproducibility).
 #
-# Minimal set needed by scripts/shadows.py, scripts/io_utils.py,
-# scripts/run_day.py, and scripts/run_scan.py.
+# Regenerate from a working environment with:
+#     pip freeze | grep -Ei '^(numpy|scipy|h5py|netCDF4|rasterio|fiona|shapely|geopandas|PyYAML)=='
+#
+# When bumping a pin, run scripts/run_scan.py on the September 2025 corpus
+# and confirm the outputs still pass visual QA before committing the change.
 
 # --- Numerics ---
-numpy>=1.24
-scipy>=1.10
+numpy==2.1.3
+scipy==1.14.1
 
-# --- I/O for TEMPO L1B / L2 (HDF5-backed NetCDF) ---
-h5py>=3.8
-netCDF4>=1.6
+# --- HDF5-backed NetCDF readers (used for L1B and L2 access) ---
+h5py==3.12.1
+netCDF4==1.7.2
 
 # --- Geospatial output (GeoTIFF + shapefile) ---
-rasterio>=1.3
-fiona>=1.9
-shapely>=2.0
-geopandas>=0.14
+rasterio==1.4.3
+fiona==1.10.1
+shapely==2.0.6
+geopandas==1.0.1
 
 # --- Config ---
-PyYAML>=6.0
+PyYAML==6.0.2
