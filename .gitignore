@@ -224,9 +224,12 @@ __marimo__/
 # --- Input data (not source-controlled; users supply their own archive) ---
 data/
 
+# --- Internal docs and exploratory notebooks (shared out of band) ---
+docs/
+notebooks/
+
 # --- Ad-hoc / legacy work directories ---
 experiments/
-docs/
 ref/
 
 # --- Pipeline outputs (generated at runtime) ---
