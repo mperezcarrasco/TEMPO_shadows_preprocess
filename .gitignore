@@ -227,6 +227,7 @@ data/
 # --- Ad-hoc / legacy work directories ---
 experiments/
 docs/
+ref/
 
 # --- Pipeline outputs (generated at runtime) ---
 results/
