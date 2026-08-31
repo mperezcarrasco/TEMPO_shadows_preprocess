@@ -115,6 +115,25 @@ def project_shadow_coords_vectorized(
     return shadow_lat, shadow_lon
 
 
+def latlon_to_ecef(
+    lat_deg: np.ndarray, lon_deg: np.ndarray, radius_m: float,
+) -> np.ndarray:
+    """Spherical ECEF coordinates for (lat, lon) in degrees.
+
+    Returns an (N, 3) array of [x, y, z] in metres on a sphere of the given
+    radius. Spherical (not WGS-84 ellipsoidal) is sufficient here: the k-d
+    tree only compares relative distances, and chord length on a sphere is
+    monotonic with great-circle distance.
+    """
+    lat_r = np.radians(lat_deg)
+    lon_r = np.radians(lon_deg)
+    return np.column_stack([
+        radius_m * np.cos(lat_r) * np.cos(lon_r),
+        radius_m * np.cos(lat_r) * np.sin(lon_r),
+        radius_m * np.sin(lat_r),
+    ])
+
+
 def draw_line(r0: int, c0: int, r1: int, c1: int, shape: Tuple[int, int]):
     """Bresenham's line — pixels visited between two grid points (inclusive)."""
     steep = abs(r1 - r0) > abs(c1 - c0)
@@ -202,10 +221,19 @@ def compute_masks(
     grid_lat = lat.ravel()
     grid_lon = lon.ravel()
     valid_flat = np.isfinite(grid_lat) & np.isfinite(grid_lon)
-    grid_pts = np.column_stack([grid_lat[valid_flat], grid_lon[valid_flat]])
+    # Nearest-pixel lookup in ECEF (Earth-Centred Earth-Fixed) coordinates.
+    # A naive Euclidean metric on (lat, lon) degrees compresses east-west
+    # distances by cos(lat) — ~36 % at 50° N — and can select a neighbour one
+    # pixel off. Chord distance on the sphere is monotonic with great-circle
+    # distance, so spherical ECEF gives the geodetically correct neighbour.
+    grid_pts = latlon_to_ecef(
+        grid_lat[valid_flat], grid_lon[valid_flat], params.m_earth,
+    )
     grid_idx_back = np.flatnonzero(valid_flat)
     tree = cKDTree(grid_pts)
-    _, nbr_idx = tree.query(np.column_stack([shadow_lat, shadow_lon]))
+    _, nbr_idx = tree.query(
+        latlon_to_ecef(shadow_lat, shadow_lon, params.m_earth)
+    )
     flat_idx = grid_idx_back[nbr_idx]
     shadow_i, shadow_j = np.unravel_index(flat_idx, lat.shape)
 
