@@ -1,0 +1,4 @@
+# This file keeps the `figures/` directory in version control while it
+# is otherwise empty. Drop final figure files (PDF or PNG) here, then
+# replace the corresponding `\placeholderfig` call in paper.tex with
+# `\includegraphics[width=\linewidth]{figures/<filename>}`.
