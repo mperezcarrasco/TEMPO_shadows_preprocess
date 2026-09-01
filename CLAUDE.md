@@ -15,24 +15,40 @@ work is now the methods paper.
 **The authoritative, always-current version of the paper lives on Overleaf:**
 <https://www.overleaf.com/project/6a20d7d9684177f5ea1c4c35>
 
-The local copies (`docs/paper/paper.tex`, `docs/paper_draft.md`) are
-snapshots and go stale as soon as anyone edits on Overleaf. Therefore:
+Since 2026-08-31 the Overleaf project is linked to the private GitHub
+repository <https://github.com/mperezcarrasco/TEMPO_shadows>, cloned
+locally at `/Users/maperezc/Downloads/TEMPO/TEMPO_shadows/` (paper.tex,
+references.bib, figures/). **The Overleaf↔GitHub sync is manual in both
+directions**: commits pushed to GitHub reach Overleaf only after clicking
+"Pull GitHub changes into Overleaf" in the project's GitHub dialog
+(Integrations → GitHub), and Overleaf edits reach GitHub only after
+clicking "Push Overleaf changes to GitHub" there.
 
-> **Standing instruction for Claude:** before discussing, auditing, or
-> editing anything about the paper, ALWAYS pull the current version from
-> the Overleaf project first (via the browser tools; the project requires
-> the user's Overleaf login — ask the user to log in if the session is
-> missing). Never reason about the paper from the local snapshots or from
-> conversation memory alone.
+The old copies (`docs/paper/paper.tex`, `docs/paper_draft.md`) are dead
+snapshots kept for history only. Therefore:
+
+> **Standing instruction for Claude (updated 2026-08-31):** the user
+> makes ALL manuscript edits by hand, directly on Overleaf. Claude never
+> edits the Overleaf document and never pushes to it (no GitHub→Overleaf
+> pulls either) — manuscript changes are proposed in chat as suggestions
+> for the user to apply. To READ the current manuscript, first sync
+> Overleaf → GitHub (open the project's GitHub dialog via the browser
+> tools and click "Push Overleaf changes to GitHub"; requires the user's
+> Overleaf login — ask them to log in if the session is missing), then
+> `git pull` in the local clone and read from it. Never reason about the
+> paper from the dead snapshots or from conversation memory alone.
 
 Interested external parties so far: NOAA STAR (Amy Huff, Pubu Ciren) want
 the shadow flag for the TEMPO-ABI Aerosol Detection Product; a zip of the
 repo was shared via Xiong Liu in July 2026. The GitHub repo goes public
 when the paper is accepted.
 
-Remaining pre-submission items: figures (all placeholders), affiliations,
-CRediT author contributions, repository URL in Code/Data availability, and
-the switch to the Copernicus class if targeting AMT.
+Remaining pre-submission items: upload the four figure PDFs from
+`docs/paper/figures/` to the Overleaf `figures/` folder (the tex already
+references them; generated 2026-08-31, see `docs/progress.md`), recompute
+the §4.2 corpus statistics (flagged as inconsistent — see progress log),
+affiliations, CRediT author contributions, repository URL in Code/Data
+availability, and the switch to the Copernicus class if targeting AMT.
 
 ---
 
@@ -208,6 +224,7 @@ debugging a regression or extending the method.
 
 | Notebook | Purpose | Status |
 |---|---|---|
+| `paper_figures.ipynb` | Generates the manuscript figures (per-granule morning/afternoon from the 2025-09-09 local granules, per-scan S004 2025-09-17 from `results_scan_scan/`) into `docs/paper/figures/`. Imports `scripts/` unmodified; logs git hash + config; includes ACSF⊆PCSF and shadow-direction oracles. Runs in `/Users/maperezc/Downloads/env`. | **Current** |
 | `Cloud_Shadows_v3_vectorized.ipynb` | Reference for the algorithm shipped in `scripts/shadows.py`. Vectorized projection, Bresenham line, ECF-based ACSF. **One known divergence:** the notebook's k-d tree uses (lat, lon) degrees; `scripts/shadows.py` was upgraded to spherical ECEF (July 2026) so the code matches the paper. Verified on the 4 local granules: ACSF IoU ≥ 0.984, counts stable to ≤0.15 %, reassigned tips move ~1 px to the geodetically nearest pixel (oracle: `compare_kdtree_metrics.py`, session scratchpad). | **Canonical** (with noted divergence) |
 | `Cloud_Shadows_v2_height.ipynb` | Step-by-step application of the cloud-height fix on top of the Debug baseline. Demonstrates why the L1B branch alone is not enough (fill-valued CTH). | Historical |
 | `Cloud Shadows Masking-Debug.ipynb` | Original per-pixel implementation. Slow; documents the silent-NaN bug in the azimuth handling that was later fixed by reading angles from L1B. | Historical |
