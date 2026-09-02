@@ -6,11 +6,19 @@ does not reference the docs and notebooks catalogued here.
 
 ---
 
-## 0. Current state of the work: PAPER WRITING
+## 0. Current state of the work: METHODOLOGY REDESIGN (validation)
 
 The pipeline is stable and published to the (private) GitHub repo
 <https://github.com/mperezcarrasco/TEMPO_shadows_preprocess>. The active
 work is now the methods paper.
+
+**Since 2026-09-01** the Methodology section is being redesigned around a
+GOES-ABI validation protocol (hand-labeled ABI scenes + corpus-wide
+darkening check, parameters by cross-validation, V03-vs-V04 on a V04
+re-run subset). Design: `docs/specs/2026-09-01-validation-methodology-design.md`.
+Execution happens on the VM (full corpus); a fresh session there must read
+`docs/handoff_vm.md` first. §1 and §2 of the manuscript are audited and
+clean; §3 audit findings are recorded in the handoff and await the rewrite.
 
 **The authoritative, always-current version of the paper lives on Overleaf:**
 <https://www.overleaf.com/project/6a20d7d9684177f5ea1c4c35>
@@ -289,7 +297,13 @@ made. The short version:
 
 3. **Angles from L1B, not L2.** In V03 and V04, L2
    `viewing_azimuth_angle` is entirely fill-valued and
-   `solar_azimuth_angle` is ~94 % fill-valued. The Debug notebook used
+   `solar_azimuth_angle` is ~94 % fill-valued.
+   **WARNING (2026-09-01): contradicted by the ASDC-distributed granules on
+   the laptop — all 8 local CLDO4 files (4 V03, 4 V04) have 0 % fill and
+   angles bit-identical to L1B. The claim may hold only for the server
+   archive copies; it is pending verification there (see
+   `docs/handoff_vm.md`, first task) and must not be reused in the
+   manuscript until then.** The Debug notebook used
    the L2 values silently; NaN propagation landed the `argmin` on grid
    index (0, 0) and drew a spurious Bresenham line from every cloud
    pixel toward the corner. This looked plausible in RGB overlay because
